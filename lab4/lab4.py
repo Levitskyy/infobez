@@ -1,13 +1,12 @@
 from Generator import Generator
+import time
 
 gnrt = Generator(12345)
 
 
-def encode_file(filename_read: str, filename_write: str, keys: str, encode: bool):
-    if encode:
-        save_keys(gnrt)
-    if not encode:
-        load_keys(gnrt)
+def encode_file(filename_read: str, filename_write: str, keys: str):
+    start = time.time()
+    load_keys(gnrt, keys)
     with open(filename_read, 'rb') as fr:
         bytes_array = []
         while True:
@@ -21,19 +20,65 @@ def encode_file(filename_read: str, filename_write: str, keys: str, encode: bool
     with open(filename_write, 'wb') as fw:
         bytes_seq = bytes(bytearray(bytes_array))
         fw.write(bytes_seq)
+    end = time.time() - start
+    print('Время гаммирования: ', end)
 
 
-def save_keys(gnrt: Generator):
-    with open('keys.txt', 'w') as f:
-        f.write(str(gnrt.a) + '\n' + str(gnrt.b) + '\n' + str(gnrt.current_number))
+def save_keys(gnrt: Generator, keyfile: str):
+    if check_file_existance(keyfile + '.key'):
+        print("Хотите заменить существующий файл?\n1) Да\n2) Нет")
+        inp = int(input())
+        if inp == 1:
+            with open(keyfile + '.key', 'w') as f:
+                gnrt.generate_new_seed(123459876)
+                f.write(str(gnrt.a) + '\n' + str(gnrt.b) + '\n' + str(gnrt.current_number))
+            return
+        elif inp == 2:
+            return
+    else:
+        with open(keyfile + '.key', 'w') as f:
+            gnrt.generate_new_seed(123459876)
+            f.write(str(gnrt.a) + '\n' + str(gnrt.b) + '\n' + str(gnrt.current_number))
 
 
-def load_keys(gnrt: Generator):
-    with open('keys.txt', 'r') as f:
+def load_keys(gnrt: Generator, keyfile: str):
+    with open(keyfile + '.key', 'r') as f:
         gnrt.a = int(f.readline())
         gnrt.b = int(f.readline())
         gnrt.current_number = int(f.readline())
 
 
-encode_file('s1.jpeg', 'newjpg', True)
-encode_file('newjpg', 'encoded.jpeg', False)
+def check_file_existance(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            return True
+    except FileNotFoundError as e:
+        return False
+    except IOError as e:
+        return False
+
+
+while True:
+    print('Выберите действие:\n1) Зашифровать файл\n2) Расшифровать файл\n3) Создать/Заменить файл с ключами\n')
+    inp = int(input())
+    if inp == 1:
+        print('Введите название файла для шифрования: ')
+        filename_read = input()
+        print('Введите название зашифрованного файла: ')
+        filename_write = input()
+        print('Введите название файла-ключа: ')
+        keys = input()
+        encode_file(filename_read, filename_write, keys)
+    if inp == 2:
+        print('Введите название файла для расшифрования: ')
+        filename_read = input()
+        print('Введите название расшифрованного файла: ')
+        filename_write = input()
+        print('Введите название файла-ключа: ')
+        keys = input()
+        encode_file(filename_read, filename_write, keys)
+    if inp == 3:
+        print('Введите название файла-ключа: ')
+        keys = input()
+        save_keys(gnrt, keys)
+
