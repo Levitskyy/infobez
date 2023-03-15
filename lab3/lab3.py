@@ -26,6 +26,14 @@ class Generator:
         b = find_coprime(a * 12341257)
         self.set_seed(a, b, c0)
 
+    def set_c0(self, c0: int):
+        self.current_number = c0
+
+    def set_other_generator_seed(self, gnrt):
+        gnrt.current_number = self.current_number
+        gnrt.a = self.a
+        gnrt.b = self.b
+
     def generate_number(self):
         generated_number = (self.a * self.current_number + self.b) % self.m
         self.current_number = generated_number
@@ -60,7 +68,7 @@ class Stats:
         default_x_ticks = range(len(x))
         plt.plot(default_x_ticks, y)
         plt.xticks([0, 20, 40, 60, 80, 100])
-        plt.ylim(0.008, 0.012)
+        plt.ylim(0, 0.05)
         plt.show()
 
         print("Средняя относительная частота:", round(mean_relative_frequency, 4))
@@ -88,14 +96,41 @@ def find_a(a: int):
     return a
 
 
-def main():
-    gnrt1 = Generator(1)
-    gnrt1.generate_new_seed(123456789)
+def write_file(gnrt: Generator, amount: int):
     stats = Stats()
-    values_amount = 1000000
-    for i in range(values_amount):
-        stats.add_value(gnrt1.generate_number())
-    stats.get_frequency(values_amount)
+    with open('numbers.txt', 'w') as f:
+        for i in range(amount):
+            new_value = gnrt.generate_number()
+            stats.add_value(new_value)
+            f.write(str(new_value) + '\n')
+    stats.get_frequency(amount)
+
+
+def main():
+    c0_console = 123456789
+    c0 = 123456789
+    gnrt = Generator(c0)
+    while True:
+        print("Выберите действие:\n1) Сгенерировать число на экран\n2) Сгенерировать n чисел в файл\n3) Изменить порождающее число последовательности\n4) Поставить новые параметры ГСПЧ\n")
+        chosen = int(input())
+        if chosen == 1:
+            gnrt.set_c0(c0_console)
+            print(gnrt.generate_number())
+            c0_console = gnrt.current_number
+        if chosen == 2:
+            gnrt.set_c0(c0)
+            print("Сколько чисел вы хотите сгенерировать: ")
+            amount = int(input())
+            write_file(gnrt, amount)
+        if chosen == 3:
+            print("Напишите новое число: ")
+            c0 = int(input())
+            c0_console = c0
+            c0_file = c0
+        if chosen == 4:
+            gnrt.generate_new_seed(987654321)
+            c0 = gnrt.current_number
+            c0_console = gnrt.current_number
 
 
 if __name__ == '__main__':
