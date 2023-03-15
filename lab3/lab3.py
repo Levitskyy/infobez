@@ -44,6 +44,9 @@ class Stats:
     frequency = [0 for x in range(100)]
     part = math.floor(2 ** 24 / 100)
 
+    def __init__(self):
+        self.frequency = [0 for x in range(100)]
+
     def add_value(self, value: int):
         try:
             self.frequency[value // self.part] += 1
@@ -66,9 +69,10 @@ class Stats:
         y = rounded_relative_frequencies
         x = [i for i in range(100)]
         default_x_ticks = range(len(x))
-        plt.plot(default_x_ticks, y)
-        plt.xticks([0, 20, 40, 60, 80, 100])
-        plt.ylim(0, 0.05)
+        plt.bar(x, self.frequency, align='center')
+        plt.xlabel('Bins')
+        plt.ylabel('Frequency')
+        #plt.ylim(0, 0.05)
         plt.show()
 
         print("Средняя относительная частота:", round(mean_relative_frequency, 4))
