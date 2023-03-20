@@ -1,5 +1,6 @@
 import datetime
 
+# Генератор из лабороторной №3
 class Generator:
     a = 0
     b = 0
