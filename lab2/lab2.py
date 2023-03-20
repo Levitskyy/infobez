@@ -22,6 +22,7 @@ def encode_sequence(sequence: str):
         reserve_len = 3
 
     encoded_seq_width = reserve_len + len(sequence)
+    print(encoded_seq_width)
     encoded_sequence = [0 for x in range(encoded_seq_width)]
     string_sequence = ''
 
