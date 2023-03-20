@@ -2,37 +2,45 @@ from typing import List
 import copy
 
 
+# Функция разбивает текст на блоки и возвращает список списков символов.
 def split_text(text: str, column_key: List[int], row_key: List[int]) -> List[List[str]]:
     result = []
     column_key_len = len(column_key)
     row_key_len = len(row_key)
+    # Проходим по каждому символу текста.
     for i, char in enumerate(text):
+        # Вычисляем номер столбца и строки для текущего символа.
         column = column_key[i % column_key_len]
         row = row_key[i // column_key_len % row_key_len]
+        # Добавляем символ в результат с номером строки, столбца и самим символом.
         result.append((row, column, char))
     number_of_blocks = 8
 
     blocks = []
     for i in range(number_of_blocks):
         blocks.append([])
-
+    # Распределяем символы по блокам.
     for item in result:
         k = len(column_key) * (item[0] - 1) + item[1]
         blocks[k - 1].append(item[2])
     return blocks
 
 
+# Функция собирает текст из списка блоков.
 def reconstruct_text(blocks: List[List[str]], column_key: List[int], row_key: List[int]) -> str:
     result = ""
     temp_blocks = copy.deepcopy(blocks)
     count = 0
+    # Пока не все блоки будут пустыми.
     while count < len(temp_blocks):
         for i in range(len(row_key)):
             for j in range(len(column_key)):
                 k = len(column_key) * (row_key[i] - 1) + column_key[j]
+                # Если блок пустой, то пропускаем его.
                 if len(temp_blocks[k - 1]) == 0:
                     count += 1
                     continue
+                # Добавляем первый символ блока в результат.
                 result += temp_blocks[k - 1].pop(0)
     return result
 
