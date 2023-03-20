@@ -11,30 +11,50 @@ class Generator:
     m = 2 ** 24
 
     def __init__(self, c0: int):
+        '''
+        Конструктор, который генерирует новые ключи для генератора
+        '''
         self.generate_new_seed(c0)
 
     def set_seed(self, a: int, b: int, c0: int):
+        '''
+        Функция применяет к генератору определенные пользователем ключи
+        '''
         self.current_number = c0
         self.a = a
         self.b = b
 
     def generate_new_seed(self, c0: int):
+        '''
+        Функция генерирует новые ключи
+        '''
         now = datetime.datetime.now()
         ms = now.microsecond
         a = find_a(ms)
+        # для псевдослучайного значения b требуется библиотека psutil, которая позволит получать текущее значения
+        # свободной оперативной памяти
         #b = find_coprime(psutil.virtual_memory().available)
         b = find_coprime(a * 12341257)
         self.set_seed(a, b, c0)
 
     def set_c0(self, c0: int):
+        '''
+        Функция изменяет текущее число в генераторе
+        '''
         self.current_number = c0
 
     def set_other_generator_seed(self, gnrt):
+        '''
+        Функция копирует параметры другого генератора в текущий
+        '''
         gnrt.current_number = self.current_number
         gnrt.a = self.a
         gnrt.b = self.b
 
     def generate_number(self):
+        '''
+        Функция генерирует псевдослучайное число на основе текущих параметров
+        '''
         generated_number = (self.a * self.current_number + self.b) % self.m
         self.current_number = generated_number
         return generated_number
@@ -45,18 +65,30 @@ class Stats:
     part = math.floor(2 ** 24 / 100)
 
     def __init__(self):
+        '''
+        Создает массив из сотни отрезков
+        '''
         self.frequency = [0 for x in range(100)]
 
     def add_value(self, value: int):
+        '''
+        Добавляет значение в определенный отрезок в массиве
+        '''
         try:
             self.frequency[value // self.part] += 1
         except IndexError:
             self.frequency[99] += 1
 
     def get_stats_array(self):
+        '''
+        Выводит массив отрезков
+        '''
         print(self.frequency)
 
     def get_frequency(self, values_amount: int):
+        '''
+        Показывает статистику попаданий чисел в определенные отрезки
+        '''
         # подсчитаем относительные частоты попадания в каждый интервал
         relative_frequencies = [count / values_amount for count in self.frequency]
 
@@ -66,6 +98,7 @@ class Stats:
         # округлим относительные частоты
         rounded_relative_frequencies = [round(freq, 4) for freq in relative_frequencies]
 
+        # вывод гистограммы
         y = rounded_relative_frequencies
         x = [i for i in range(100)]
         default_x_ticks = range(len(x))
@@ -80,6 +113,9 @@ class Stats:
 
 
 def find_gcd(a: int, b: int) -> int:
+    '''
+    Функция находит НОД
+    '''
     while a != 0 and b != 0:
         if a > b:
             a %= b
@@ -89,18 +125,28 @@ def find_gcd(a: int, b: int) -> int:
 
 
 def find_coprime(number: int):
+    '''
+    Функция находит взаимно простое число с 2^24
+    '''
     while (find_gcd(number, 2 ** 24) != 1) and (number % 2 == 0):
         number += 1
     return number
 
 
 def find_a(a: int):
+    '''
+    Функция возвращает первое подходящее число для ключа a
+    '''
     while a % 4 != 1:
         a += 1
     return a
 
 
 def write_file(gnrt: Generator, amount: int):
+    '''
+    Функция записывает определенное кол-во псевдослучайных чисел в файл numbers.txt
+    и выводит статистику
+    '''
     stats = Stats()
     with open('numbers.txt', 'w') as f:
         for i in range(amount):
@@ -111,6 +157,7 @@ def write_file(gnrt: Generator, amount: int):
 
 
 def main():
+    # Цикл программы
     c0_console = 123456789
     c0 = 123456789
     gnrt = Generator(c0)
