@@ -38,6 +38,10 @@ def encode_sequence(sequence: str):
     # Создаем матрицу проверки четности
     a_matrix = create_matrix(reserve_len, encoded_seq_width)
 
+    print("Матрица шифрования:")
+    for i in a_matrix:
+        print(i)
+
     # Вычисляем значения проверочных битов
     for i in range(reserve_len):
         for j in range(encoded_seq_width):
@@ -107,14 +111,14 @@ def decode_sequence(sequence: str):
 
     # Проверки на количество ошибок и вывод
     if (sum % 2 == 0) and (error_sum != 0):
-        print("Double error")
+        print("Двойная ошибка")
         return
     if (sum % 2 == 1) and (error_sum != 0):
-        print("Error on pos " + str(error_sum + 1))
-        print("Correct message: " + corrected_msg)
+        print("Ошибка на позиции " + str(error_sum + 1))
+        print("Исправленное сообщение: " + corrected_msg)
         return
-    print("No errors")
-    print("Message: " + corrected_msg)
+    print("Нет ошибок")
+    print("Сообщение: " + corrected_msg)
     return
 
 
@@ -137,7 +141,10 @@ def create_matrix(reserve_len: int, matrix_width: int):
 
 
 while True:
+    print("Введите последовательность битов для шифрования: ")
     bits = input()
     encoded = encode_sequence(bits)
+    print("Зашифрованное сообщение: ")
     print(encoded)
+    print("Введите сообщение для расшифровки: ")
     decode_sequence(input())
