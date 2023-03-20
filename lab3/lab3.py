@@ -1,5 +1,5 @@
 import datetime
-#import psutil
+import psutil
 import math
 import matplotlib.pyplot as plt
 
@@ -33,8 +33,8 @@ class Generator:
         a = find_a(ms)
         # для псевдослучайного значения b требуется библиотека psutil, которая позволит получать текущее значения
         # свободной оперативной памяти
-        #b = find_coprime(psutil.virtual_memory().available)
-        b = find_coprime(a * 12341257)
+        b = find_coprime(psutil.virtual_memory().available)
+        #b = find_coprime(a * 12341257)
         self.set_seed(a, b, c0)
 
     def set_c0(self, c0: int):
@@ -63,6 +63,8 @@ class Generator:
 class Stats:
     frequency = [0 for x in range(100)]
     part = math.floor(2 ** 24 / 100)
+    min_freq = 1.01
+    max_freq = -1.0
 
     def __init__(self):
         '''
@@ -109,7 +111,11 @@ class Stats:
         plt.show()
 
         print("Средняя относительная частота:", round(mean_relative_frequency, 4))
+        print("Минимальная относительная частота:", min(rounded_relative_frequencies))
+        print("Максимальная относительная частота:", max(rounded_relative_frequencies))
         print("Относительные частоты попадания в интервалы:", rounded_relative_frequencies)
+
+
 
 
 def find_gcd(a: int, b: int) -> int:
