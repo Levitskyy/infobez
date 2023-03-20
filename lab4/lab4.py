@@ -77,28 +77,32 @@ def check_file_existance(file_path):
         return False
 
 
-while True:
-    # Цикл программы
-    print('Выберите действие:\n1) Зашифровать файл\n2) Расшифровать файл\n3) Создать/Заменить файл с ключами\n')
-    inp = int(input())
-    if inp == 1:
-        print('Введите название файла для шифрования: ')
-        filename_read = input()
-        print('Введите название зашифрованного файла: ')
-        filename_write = input()
-        print('Введите название файла-ключа: ')
-        keys = input()
-        encode_file(filename_read, filename_write, keys)
-    if inp == 2:
-        print('Введите название файла для расшифрования: ')
-        filename_read = input()
-        print('Введите название расшифрованного файла: ')
-        filename_write = input()
-        print('Введите название файла-ключа: ')
-        keys = input()
-        encode_file(filename_read, filename_write, keys)
-    if inp == 3:
-        print('Введите название файла-ключа: ')
-        keys = input()
-        save_keys(gnrt, keys)
+def main():
+    while True:
+        # Цикл программы
+        print('Выберите действие:\n1) Зашифровать файл\n2) Расшифровать файл\n3) Создать/Заменить файл с ключами\n')
+        inp = int(input())
+        if inp == 1:
+            print('Введите название файла для шифрования: ')
+            filename_read = input()
+            print('Введите название зашифрованного файла: ')
+            filename_write = input()
+            print('Введите название файла-ключа: ')
+            keys = input()
+            encode_file(filename_read, filename_write, keys)
+        if inp == 2:
+            print('Введите название файла для расшифрования: ')
+            filename_read = input()
+            print('Введите название расшифрованного файла: ')
+            filename_write = input()
+            print('Введите название файла-ключа: ')
+            keys = input()
+            encode_file(filename_read, filename_write, keys)
+        if inp == 3:
+            print('Введите название файла-ключа: ')
+            keys = input()
+            save_keys(gnrt, keys)
+
+if __name__ == "main":
+    main()
 
